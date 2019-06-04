@@ -78,10 +78,46 @@ class REsearcher
 					//if it wasn't then we can add it to the tower
 					if(present == false)
 					{
-						//add the box to the tower 
-						tower.add(temp);
+						//It will probably be easiest to sort the boxes here
+						if(tower.size() == 0)
+						{
+							tower.add(temp);
+						}
+						else
+						{
+							//loop through the current tower
+							for(int p = 0; p < tower.size(); p++)
+							{
+								//check to see if the new box is bigger than the current box
+								if(temp.getLength > tower.get(p).getLength() && temp.getWidth() > tower.get(p).getWidth())
+								{
+									//it is
+									//so we put the new box in here and hold on to the other box and move it upwards
+									Box tempBox;
+									tempBox = tower.get(p);
+									tower.set(p, temp);
+									temp = tempBox;
+								}
+								//it isn't
+								//we'll potentially deal with that later
+								else
+								{
+									
+								}
+							}
+							//temp at the end could be very small so it wouldn't have been added ealier. This makes sure that it gets added
+							if(temp.getLength < tower.get(p).getLength() && temp.getWidth() < tower.get(p).getWidth())
+							{
+								tower.add(temp);
+							}
+							//if it gets to here it means that the box was more oblong than any other and it will not fit no matter where it is on the tower(in theory)
+							else
+							{
+								
+							}
+						}
 					}
-				}
+				}				
 				//add the tower to the list of towers
 				towerList.add(tower);
 				//clear the tower for the next build
@@ -101,7 +137,8 @@ class Box
 	private int _width;
 	private int _length;
 	private int _height;
-	private int _id
+	private int _id;
+	private int _area;
 	
 	public Box(int id, int width, int length, int height)
 	{
@@ -109,6 +146,7 @@ class Box
 		_length = length;
 		_height = height;
 		_id = id;
+		_area = _width*_length;
 	}
 	
 	public int getWidth()
