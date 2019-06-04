@@ -8,6 +8,7 @@ import java.util.Random;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 
 class REsearcher
 {
@@ -17,26 +18,26 @@ class REsearcher
 		{
 			//add the boxes into the program from the file
 			BufferedReader boxReader = new BufferedReader(new FileReader(args[0]));
-			boxLine = boxReader.readLine();
+			String boxLine = boxReader.readLine();
 			ArrayList<Box> boxList = new ArrayList<Box>();
 			ArrayList<Box> tower = new ArrayList<Box>();
 			ArrayList<ArrayList> towerList = new ArrayList();
-			int[] anotherArray = new int[5];
+			Box[] anotherArray = new Box[5];
 			
 			Random rand = new Random(); 
 			
-			int[] tempBox = new int[3];
-			count = 0;
+			String[] tempBox = new String[3];
+			int count = 0;
 			//add the boxes into a box class and put them all in a list
 			while(boxLine != null)
 			{
 				tempBox = boxLine.split(" ");
 				//each of these three boxes count as the same box, but this is its different rotations
-				Box newBox = new Box(count, tempBox[0], tempBox[1], tempBox[2]);
+				Box newBox = new Box(count, Integer.parseInt(tempBox[0]), Integer.parseInt(tempBox[1]), Integer.parseInt(tempBox[2]));
 				boxList.add(newBox);
-				Box newBox = new Box(count, tempBox[1], tempBox[2], tempBox[0]);
+				newBox = new Box(count, Integer.parseInt(tempBox[1]), Integer.parseInt(tempBox[2]), Integer.parseInt(tempBox[0]));
 				boxList.add(newBox);
-				Box newBox = new Box(count, tempBox[2], tempBox[0], tempBox[1]);
+				newBox = new Box(count, Integer.parseInt(tempBox[2]), Integer.parseInt(tempBox[0]), Integer.parseInt(tempBox[1]));
 				boxList.add(newBox);
 				boxLine = boxReader.readLine();
 				count++;
@@ -56,7 +57,7 @@ class REsearcher
 					//This variable is added to k so that if we encounter a box we already have we can increment this and get the next one along, without running into the upper bound of the for loop
 					int boxCounter = 0;
 					//get the box from the list
-					Box temp = boxList.get(k + boxCounter)
+					Box temp = boxList.get(k + boxCounter);
 					//loop through
 					for(int m = 0; m < anotherArray.length; k++)
 					{
@@ -89,14 +90,14 @@ class REsearcher
 							for(int p = 0; p < tower.size(); p++)
 							{
 								//check to see if the new box is bigger than the current box
-								if(temp.getLength > tower.get(p).getLength() && temp.getWidth() > tower.get(p).getWidth())
+								if(temp.getLength() > tower.get(p).getLength() && temp.getWidth() > tower.get(p).getWidth())
 								{
 									//it is
 									//so we put the new box in here and hold on to the other box and move it upwards
-									Box tempBox;
-									tempBox = tower.get(p);
+									Box temporaryBox;
+									temporaryBox = tower.get(p);
 									tower.set(p, temp);
-									temp = tempBox;
+									temp = temporaryBox;
 								}
 								//it isn't
 								//we'll potentially deal with that later
@@ -106,7 +107,7 @@ class REsearcher
 								}
 							}
 							//temp at the end could be very small so it wouldn't have been added ealier. This makes sure that it gets added
-							if(temp.getLength < tower.get(p).getLength() && temp.getWidth() < tower.get(p).getWidth())
+							if(temp.getLength() < tower.get(tower.size()-1).getLength() && temp.getWidth() < tower.get(tower.size()-1).getWidth())
 							{
 								tower.add(temp);
 							}
@@ -157,11 +158,11 @@ class Box
 	{
 		return _length;
 	}
-	public int getHeight();
+	public int getHeight()
 	{
 		return _height;
 	}
-	public int getID();
+	public int getID()
 	{
 		return _id;
 	}
