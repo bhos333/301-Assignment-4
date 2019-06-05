@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
-class REsearcher
+class NPStack
 {
 	public static void main(String[] args)
 	{
@@ -47,11 +47,13 @@ class REsearcher
 			//number of towers equal to the number entered in the command line
 			for(int i = 0; i < Integer.parseInt(args[1]); i++)
 			{
+				System.out.println("-Loop-");
 				//shuffle the list becuase that is easier than randomly selecting values from it
 				Collections.shuffle(boxList);
 				//This is looping to select the boxes themselves 
 				for(int k = 0; k < anotherArray.length; k++)
 				{
+					System.out.println("--Loop--");
 					//we need a boolean to check whether a box already appears in the list
 					boolean present = false;
 					//This variable is added to k so that if we encounter a box we already have we can increment this and get the next one along, without running into the upper bound of the for loop
@@ -61,16 +63,27 @@ class REsearcher
 					//loop through
 					for(int m = 0; m < anotherArray.length; k++)
 					{
-						//check if the boxID of the temp box is the same as any in the tower so far
-						if(temp.getID() == anotherArray[m].getID())
+						System.out.println(Integer.toString(temp.getID()));
+						System.out.println("---Loop---");
+						if(anotherArray[0] == null)
 						{
+							anotherArray[0] = temp;
+						}
+						//check if the boxID of the temp box is the same as any in the tower so far
+						else if(temp.getID() == anotherArray[m].getID())
+						{
+							
 							//decrement k so that we actual get 5 values
-							k--;
+							//k--;
 							//increment boxCounter so that we can get the next box along in the array list
 							boxCounter++;
 							//set present to tru so that we know not to add it
 							present = true;
 							//return to the previous for loop
+							break;
+						}
+						else
+						{
 							break;
 						}
 					}
@@ -89,6 +102,7 @@ class REsearcher
 							//loop through the current tower
 							for(int p = 0; p < tower.size(); p++)
 							{
+								System.out.println("----Loop----");
 								//check to see if the new box is bigger than the current box
 								if(temp.getLength() > tower.get(p).getLength() && temp.getWidth() > tower.get(p).getWidth())
 								{
@@ -123,6 +137,18 @@ class REsearcher
 				towerList.add(tower);
 				//clear the tower for the next build
 				tower.clear();
+			}
+			System.out.println("Width, Length, Height");
+			for(int i = 0; i < towerList.size(); i++)
+			{
+				ArrayList<Box> tempTower = towerList.get(i);
+				int towerHeight=0;
+				for(int k = 0; k < towerList.get(i).size(); k++)
+				{
+					towerHeight += tempTower.get(k).getHeight();
+					System.out.println(Integer.toString(tempTower.get(k).getWidth()) + " " + Integer.toString(tempTower.get(k).getLength()) + " " + Integer.toString(tempTower.get(k).getHeight()));
+				}
+				System.out.println("Tower Height: ");
 			}
 			
 		}
