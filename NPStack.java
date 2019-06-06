@@ -25,14 +25,19 @@ class NPStack
 			Box[] anotherArray = new Box[5];
 			
 			Random rand = new Random(); 
+
+			//This variable is helpful for skipping over boxes that already exist in the tower in some other orientation
+			int boxCounter = 0;
 			
 			String[] tempBox = new String[3];
 			int count = 0;
 			//add the boxes into a box class and put them all in a list
 			while(boxLine != null)
 			{
+				// Get the disparate box elements
 				tempBox = boxLine.split(" ");
 				//each of these three boxes count as the same box, but this is its different rotations
+				// We're using count as the ID for each box
 				Box newBox = new Box(count, Integer.parseInt(tempBox[0]), Integer.parseInt(tempBox[1]), Integer.parseInt(tempBox[2]));
 				boxList.add(newBox);
 				newBox = new Box(count, Integer.parseInt(tempBox[1]), Integer.parseInt(tempBox[2]), Integer.parseInt(tempBox[0]));
@@ -55,50 +60,25 @@ class NPStack
 				{
 					System.out.println("--Loop--");
 					//we need a boolean to check whether a box already appears in the list
-					boolean present = false;
-					//This variable is added to k so that if we encounter a box we already have we can increment this and get the next one along, without running into the upper bound of the for loop
-					int boxCounter = 0;
+					// boolean present = false;
 					//get the box from the list
-					Box temp = boxList.get(k + boxCounter);
-					//loop through
-					for(int m = 0; m < anotherArray.length; k++)
+					Box temp = boxList.get(k);
+					if(tower.size() == 0)
 					{
-						System.out.println(Integer.toString(temp.getID()));
-						System.out.println("---Loop---");
-						if(anotherArray[0] == null)
-						{
-							anotherArray[0] = temp;
-						}
-						//check if the boxID of the temp box is the same as any in the tower so far
-						else if(temp.getID() == anotherArray[m].getID())
-						{
-							
-							//decrement k so that we actual get 5 values
-							//k--;
-							//increment boxCounter so that we can get the next box along in the array list
-							boxCounter++;
-							//set present to tru so that we know not to add it
-							present = true;
-							//return to the previous for loop
-							break;
-						}
-						else
-						{
-							break;
-						}
+						tower.add(temp);
 					}
-					//check whether it was there or not
-					//if it was we do nothing, it should loop again
-					//if it wasn't then we can add it to the tower
-					if(present == false)
+					else
 					{
-						//It will probably be easiest to sort the boxes here
-						if(tower.size() == 0)
-						{
-							tower.add(temp);
+						boolean present = false;
+						// Loop through each box in the tower and check if temp already exists somewhere
+						for (Box box : tower) {
+							// If it does
+							if (temp.getID() == box.getID()) {
+								// Flag that it has been found and should be passed over
+								present = true;
+							}
 						}
-						else
-						{
+						if (!present) {
 							//loop through the current tower
 							for(int p = 0; p < tower.size(); p++)
 							{
@@ -136,9 +116,10 @@ class NPStack
 				//add the tower to the list of towers
 				towerList.add(tower);
 				//clear the tower for the next build
-				tower.clear();
+				tower = new ArrayList<Box>();				
+				boxCounter = 0;
 			}
-			System.out.println("Width, Length, Height");
+			System.out.println("Width, Length, Height, ID");
 			for(int i = 0; i < towerList.size(); i++)
 			{
 				ArrayList<Box> tempTower = towerList.get(i);
@@ -146,9 +127,9 @@ class NPStack
 				for(int k = 0; k < towerList.get(i).size(); k++)
 				{
 					towerHeight += tempTower.get(k).getHeight();
-					System.out.println(Integer.toString(tempTower.get(k).getWidth()) + " " + Integer.toString(tempTower.get(k).getLength()) + " " + Integer.toString(tempTower.get(k).getHeight()));
+					System.out.println(Integer.toString(tempTower.get(k).getWidth()) + " " + Integer.toString(tempTower.get(k).getLength()) + " " + Integer.toString(tempTower.get(k).getHeight()) + " " + Integer.toString(tempTower.get(k).getID()));
 				}
-				System.out.println("Tower Height: ");
+				System.out.println("Tower Height: " + Integer.toString(towerHeight));
 			}
 			
 		}
