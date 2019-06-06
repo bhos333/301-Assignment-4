@@ -84,20 +84,41 @@ class NPStack
 							{
 								System.out.println("----Loop----");
 								//check to see if the new box is bigger than the current box
-								if(temp.getLength() > tower.get(p).getLength() && temp.getWidth() > tower.get(p).getWidth())
+								if(p > 0)
 								{
-									//it is
-									//so we put the new box in here and hold on to the other box and move it upwards
-									Box temporaryBox;
-									temporaryBox = tower.get(p);
-									tower.set(p, temp);
-									temp = temporaryBox;
+									if(temp.getLength() > tower.get(p).getLength() && temp.getWidth() > tower.get(p).getWidth() && temp.getLength() < tower.get(p - 1).getLength() && temp.getWidth() < tower.get(p - 1).getLength())
+									{
+										//it is
+										//so we put the new box in here and hold on to the other box and move it upwards
+										Box temporaryBox;
+										temporaryBox = tower.get(p);
+										tower.set(p, temp);
+										temp = temporaryBox;
+									}
+									//it isn't
+									//we'll potentially deal with that later
+									else
+									{
+										
+									}
 								}
-								//it isn't
-								//we'll potentially deal with that later
 								else
 								{
-									
+									if(temp.getLength() > tower.get(p).getLength() && temp.getWidth() > tower.get(p).getWidth())
+									{
+										//it is
+										//so we put the new box in here and hold on to the other box and move it upwards
+										Box temporaryBox;
+										temporaryBox = tower.get(p);
+										tower.set(p, temp);
+										temp = temporaryBox;
+									}
+									//it isn't
+									//we'll potentially deal with that later
+									else
+									{
+										
+									}
 								}
 							}
 							//temp at the end could be very small so it wouldn't have been added ealier. This makes sure that it gets added
