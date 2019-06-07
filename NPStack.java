@@ -20,13 +20,12 @@ class NPStack
 	public static void main(String[] args)
 	{
 		generateTowers(args[0], Integer.parseInt(args[1]));
-		// Need to find out some stopping condition
-		//while (true) {
+		for (int i = 0; i < 5; i++) {
 			// Get our two tallest towers
 			selection();
 			// Cross them over
 			crossover();
-		//}
+		}
 	}
 
 	static void generateTowers(String filename, int numTowers) {
@@ -271,6 +270,7 @@ class NPStack
 				child1.printTower();
 				System.out.println("////////////////////////////CHILD 2//////////////////////////////////////////////");
 				child2.printTower();
+				addOffspring(child1, child2);
 				break;
 			} else {
 				switchLevel++;
@@ -320,6 +320,7 @@ class NPStack
 				smallestIndex = i;
 			}
 		}
+		System.out.println("Removing tower at index " + smallestIndex);
 		towerList.remove(smallestIndex);
 	} 
 
