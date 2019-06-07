@@ -20,12 +20,26 @@ class NPStack
 	public static void main(String[] args)
 	{
 		generateTowers(args[0], Integer.parseInt(args[1]));
-		for (int i = 0; i < 5; i++) {
+		int maxBefore = Integer.MIN_VALUE;
+		for (int i = 0; i < towerList.size(); i++) {
+			if (towerList.get(i).getHeight() > maxBefore) {
+				maxBefore = towerList.get(i).getHeight();
+			}
+		}
+		// This for loop will have to change to some exit condition
+		for (int i = 0; i < 10; i++) {
 			// Get our two tallest towers
 			selection();
 			// Cross them over
 			crossover();
 		}
+		int maxAfter = Integer.MIN_VALUE;
+		for (int i = 0; i < towerList.size(); i++) {
+			if (towerList.get(i).getHeight() > maxAfter) {
+				maxAfter = towerList.get(i).getHeight();
+			}
+		}
+		System.out.println("MAX HEIGHT BEFORE GENETIC ITERATIONS: " + maxBefore + " & MAX HEIGHT AFTER: " + maxAfter);
 	}
 
 	static void generateTowers(String filename, int numTowers) {
@@ -64,13 +78,11 @@ class NPStack
 			//number of towers equal to the number entered in the command line
 			for(int i = 0; i < numTowers; i++)
 			{
-				System.out.println("-Loop-");
 				//shuffle the list becuase that is easier than randomly selecting values from it
 				Collections.shuffle(boxList);
 				//This is looping to select the boxes themselves 
 				for(int k = 0; k < boxList.size(); k++)
 				{
-					System.out.println("--Loop--");
 					//we need a boolean to check whether a box already appears in the list
 					// boolean present = false;
 					//get the box from the list
@@ -94,7 +106,6 @@ class NPStack
 							//loop through the current tower
 							for(int p = 0; p < tower.size(); p++)
 							{
-								System.out.println("----Loop----");
 								//check to see if the new box is bigger than the current box
 								if(p > 0)
 								{
@@ -163,7 +174,6 @@ class NPStack
 	}
 
 	static void selection() {
-
 		// First we get the tallest/fittest
 		int maxHeight = Integer.MIN_VALUE;
 		int maxHeightIndex = 0;
@@ -174,28 +184,39 @@ class NPStack
 			}
 		}
 		parentOne = towerList.get(maxHeightIndex);
-		// Next we get the second tallest/fittest
-		maxHeight = 0;
-		int maxHeight2 = 0;
-		for (int i = 0; i < towerList.size(); i++) {
-			if (towerList.get(i).getHeight() > towerList.get(maxHeight).getHeight() ) {
-				maxHeight2 = maxHeight;
-				maxHeight = i;
-			} else if (towerList.get(i).getHeight() > towerList.get(maxHeight2).getHeight()) {
-				maxHeight2 = i;
-			}
+		// Then we're going to select a random tower as the second parent
+		int randIndex = rand.nextInt(towerList.size());
+		parentTwo = towerList.get(randIndex);
+		// We won't allow two towers of the same height to breed, since they're likely the same tower
+		while (parentOne.getHeight() == parentTwo.getHeight()) {
+			randIndex = rand.nextInt(towerList.size());
+			parentTwo = towerList.get(randIndex); 
 		}
-		parentTwo = towerList.get(maxHeight2);
+		// // Next we get the second tallest/fittest
+		// maxHeightIndex = 0;
+		// int maxHeightIndex2 = 0;
+		// for (int i = 0; i < towerList.size(); i++) {
+		// 	if (towerList.get(i).getHeight() > towerList.get(maxHeightIndex).getHeight() ) {
+		// 		maxHeightIndex2 = maxHeightIndex;
+		// 		maxHeightIndex = i;
+		// 	} else if (towerList.get(i).getHeight() > towerList.get(maxHeightIndex2).getHeight() && towerList.get(i).getHeight() != parentOne.getHeight()) {
+		// 		maxHeightIndex2 = i;
+		// 	}
+		// }
+		// parentTwo = towerList.get(maxHeightIndex2);
 	}
 
 	static void crossover() {
-		System.out.println("////////////////////////////TALLEST TOWER//////////////////////////////////////////////");
+		System.out.println("////////////////////////////PARENT ONE//////////////////////////////////////////////");
 		parentOne.printTower();
-		System.out.println("////////////////////////////2nd TALLEST TOWER//////////////////////////////////////////////");		
+		System.out.println("////////////////////////////PARENT TWO//////////////////////////////////////////////");		
 		parentTwo.printTower();
+		int switchLevel = 1;
 		// Choose a random level that is less than the shorter of the two's heights
 		int lesserNumberOfBoxes = Math.min(parentOne.getSize(), parentTwo.getSize());
-		int switchLevel = rand.nextInt((lesserNumberOfBoxes - 1)) + 1;
+		if (lesserNumberOfBoxes > 1) {
+			switchLevel = rand.nextInt((lesserNumberOfBoxes - 1)) + 1;
+		}
 		// Get the boxes of the parent towers and store them in new variables (We're about to change them & don't want to change the orignal towers)
 		ArrayList<Box> parent1Boxes = parentOne.getBoxes();
 		ArrayList<Box> parent2Boxes = parentTwo.getBoxes();
@@ -266,9 +287,9 @@ class NPStack
 				child2 = new Tower(forChild2);
 
 
-				System.out.println("////////////////////////////CHILD 1//////////////////////////////////////////////");
+				System.out.println("////////////////////////////CHILD ONE//////////////////////////////////////////////");
 				child1.printTower();
-				System.out.println("////////////////////////////CHILD 2//////////////////////////////////////////////");
+				System.out.println("////////////////////////////CHILD TWO//////////////////////////////////////////////");
 				child2.printTower();
 				addOffspring(child1, child2);
 				break;
