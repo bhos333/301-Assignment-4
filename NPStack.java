@@ -14,8 +14,8 @@ class NPStack
 {
 	static Random rand = new Random(); 
 	static ArrayList<Tower> towerList = new ArrayList();		
-	static Tower tallestTower;
-	static Tower secondTallestTower;
+	static Tower parentOne;
+	static Tower parentTwo;
 
 	public static void main(String[] args)
 	{
@@ -174,7 +174,7 @@ class NPStack
 				maxHeightIndex = i;
 			}
 		}
-		tallestTower = towerList.get(maxHeightIndex);
+		parentOne = towerList.get(maxHeightIndex);
 		// Next we get the second tallest/fittest
 		maxHeight = 0;
 		int maxHeight2 = 0;
@@ -186,20 +186,20 @@ class NPStack
 				maxHeight2 = i;
 			}
 		}
-		secondTallestTower = towerList.get(maxHeight2);
+		parentTwo = towerList.get(maxHeight2);
 	}
 
 	static void crossover() {
 		System.out.println("////////////////////////////TALLEST TOWER//////////////////////////////////////////////");
-		tallestTower.printTower();		
+		parentOne.printTower();
 		System.out.println("////////////////////////////2nd TALLEST TOWER//////////////////////////////////////////////");		
-		secondTallestTower.printTower();	
+		parentTwo.printTower();
 		// Choose a random level that is less than the shorter of the two's heights
-		int lesserNumberOfBoxes = Math.min(tallestTower.getSize(), secondTallestTower.getSize());
+		int lesserNumberOfBoxes = Math.min(parentOne.getSize(), parentTwo.getSize());
 		int switchLevel = rand.nextInt((lesserNumberOfBoxes - 1)) + 1;
 		// Get the boxes of the parent towers and store them in new variables (We're about to change them & don't want to change the orignal towers)
-		ArrayList<Box> parent1Boxes = tallestTower.getBoxes();		
-		ArrayList<Box> parent2Boxes = secondTallestTower.getBoxes();
+		ArrayList<Box> parent1Boxes = parentOne.getBoxes();
+		ArrayList<Box> parent2Boxes = parentTwo.getBoxes();
 
 		boolean switch1Valid = false;		
 		boolean switch2Valid = false;
