@@ -27,7 +27,7 @@ class NPStack
 			}
 		}
 		// This for loop will have to change to some exit condition
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 100; i++) {
 			// Get our two tallest towers
 			selection();
 			// Cross them over
@@ -186,12 +186,11 @@ class NPStack
 		parentOne = towerList.get(maxHeightIndex);
 		// Then we're going to select a random tower as the second parent
 		int randIndex = rand.nextInt(towerList.size());
-		parentTwo = towerList.get(randIndex);
-		// We won't allow two towers of the same height to breed, since they're likely the same tower
-		while (parentOne.getHeight() == parentTwo.getHeight()) {
+		// If randIndex selects the same tower as parent one, reselect
+		while (randIndex == maxHeightIndex) {
 			randIndex = rand.nextInt(towerList.size());
-			parentTwo = towerList.get(randIndex); 
 		}
+		parentTwo = towerList.get(randIndex);
 		// // Next we get the second tallest/fittest
 		// maxHeightIndex = 0;
 		// int maxHeightIndex2 = 0;
