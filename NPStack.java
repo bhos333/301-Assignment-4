@@ -27,11 +27,21 @@ class NPStack
 			}
 		}
 		// This for loop will have to change to some exit condition
-		for (int i = 0; i < 100; i++) {
+		while (true) {
 			// Get our two tallest towers
 			selection();
 			// Cross them over
 			crossover();
+			int height = towerList.get(0).getHeight();
+			boolean converged = true;
+			for (Tower t : towerList) {
+				if (t.getHeight() != height) {
+					converged = false;
+				}
+			}
+			if (converged) {
+				break;
+			}
 		}
 		int maxAfter = Integer.MIN_VALUE;
 		for (int i = 0; i < towerList.size(); i++) {
