@@ -20,9 +20,12 @@ class NPStack
 	public static void main(String[] args)
 	{		
 		// Generate the initial amount of towers
-		generateTowers(args[0], Integer.parseInt(args[1]));
+		//I changed num towers to just be a static number such as 50
+		//Integer.parseInt(args[1])
+		generateTowers(args[0], 50);
 		// This for loop will have to change to some exit condition
-		while (!isConverged()) {
+		for(int i = 0; i < Integer.parseInt(args[1]); i++) 
+		{
 			// Get our two tallest towers
 			selection();
 			// Cross them over
@@ -51,6 +54,11 @@ class NPStack
 			{
 				// Get the disparate box elements
 				tempBox = boxLine.split(" ");
+				if((Integer.parseInt(tempBox[0]) < 1) || (Integer.parseInt(tempBox[1]) < 1) || (Integer.parseInt(tempBox[2]) < 1))
+				{
+					continue;
+				}
+				
 				//each of these three boxes count as the same box, but this is its different rotations
 				// We're using count as the ID for each box
 				Box newBox = new Box(count, Integer.parseInt(tempBox[0]), Integer.parseInt(tempBox[1]), Integer.parseInt(tempBox[2]));
