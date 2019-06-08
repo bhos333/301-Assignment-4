@@ -18,38 +18,20 @@ class NPStack
 	static Tower parentTwo;
 
 	public static void main(String[] args)
-	{
+	{		
+		// Generate the initial amount of towers
 		generateTowers(args[0], Integer.parseInt(args[1]));
-		int maxBefore = Integer.MIN_VALUE;
-		for (int i = 0; i < towerList.size(); i++) {
-			if (towerList.get(i).getHeight() > maxBefore) {
-				maxBefore = towerList.get(i).getHeight();
-			}
-		}
 		// This for loop will have to change to some exit condition
-		while (true) {
+		while (!isConverged()) {
 			// Get our two tallest towers
 			selection();
 			// Cross them over
 			crossover();
-			int height = towerList.get(0).getHeight();
-			boolean converged = true;
-			for (Tower t : towerList) {
-				if (t.getHeight() != height) {
-					converged = false;
-				}
-			}
-			if (converged) {
-				break;
-			}
 		}
-		int maxAfter = Integer.MIN_VALUE;
-		for (int i = 0; i < towerList.size(); i++) {
-			if (towerList.get(i).getHeight() > maxAfter) {
-				maxAfter = towerList.get(i).getHeight();
-			}
-		}
-		System.out.println("MAX HEIGHT BEFORE GENETIC ITERATIONS: " + maxBefore + " & MAX HEIGHT AFTER: " + maxAfter);
+		// Get the tallest tower and put it in parentOne
+		selection();
+		// Print parentOne
+		parentOne.printTower();
 	}
 
 	static void generateTowers(String filename, int numTowers) {
@@ -61,9 +43,6 @@ class NPStack
 			ArrayList<Box> boxList = new ArrayList<Box>();
 			ArrayList<Box> tower = new ArrayList<Box>();
 			Box[] anotherArray = new Box[5];
-
-			//This variable is helpful for skipping over boxes that already exist in the tower in some other orientation
-			int boxCounter = 0;
 			
 			String[] tempBox = new String[3];
 			int count = 0;
@@ -84,8 +63,8 @@ class NPStack
 				count++;
 			}
 			
-			//build initial towers
-			//number of towers equal to the number entered in the command line
+			// Build initial towers
+			// Number of towers is equal to the number entered in the command line (which has been provided as an argument)
 			for(int i = 0; i < numTowers; i++)
 			{
 				//shuffle the list becuase that is easier than randomly selecting values from it
@@ -93,18 +72,18 @@ class NPStack
 				//This is looping to select the boxes themselves 
 				for(int k = 0; k < boxList.size(); k++)
 				{
-					//we need a boolean to check whether a box already appears in the list
-					// boolean present = false;
-					//get the box from the list
+					// Get the box from the list
 					Box temp = boxList.get(k);
+					// If our tower doesn't have any boxes yet, we don't need to check anything. Just add it
 					if(tower.size() == 0)
 					{
 						tower.add(temp);
 					}
+					// If there are boxes in the tower
 					else
-					{
-						boolean present = false;
+					{						
 						// Loop through each box in the tower and check if temp already exists somewhere
+						boolean present = false;
 						for (Box box : tower) {
 							// If it does
 							if (temp.getID() == box.getID()) {
@@ -112,54 +91,46 @@ class NPStack
 								present = true;
 							}
 						}
+						// 	If the current box isn't found in the tower
 						if (!present) {
-							//loop through the current tower
+							// Loop through the current tower
 							for(int p = 0; p < tower.size(); p++)
 							{
-								//check to see if the new box is bigger than the current box
+								// If we're not on the base box
 								if(p > 0)
 								{
-									if(temp.getLength() > tower.get(p).getLength() && temp.getWidth() > tower.get(p).getWidth() && temp.getLength() < tower.get(p - 1).getLength() && temp.getWidth() < tower.get(p - 1).getLength())
+									// Check to see if the new box is bigger than the current box, and also fits on the base below
+									if(temp.getLength() > tower.get(p).getLength() && temp.getWidth() > tower.get(p).getWidth() && temp.getLength() < tower.get(p - 1).getLength() && temp.getWidth() < tower.get(p - 1).getWidth())
 									{
-										//it is
-										//so we put the new box in here and hold on to the other box and move it upwards
+										// If it is, we substitute in our box and take the box swapped out, ready to move it further up
 										Box temporaryBox;
 										temporaryBox = tower.get(p);
 										tower.set(p, temp);
 										temp = temporaryBox;
 									}
-									//it isn't
-									//we'll potentially deal with that later
-									else
-									{
-										
-									}
 								}
+								// If we are on the base box
 								else
 								{
+									// If the new box is larger in both dimensions than the current base
 									if(temp.getLength() > tower.get(p).getLength() && temp.getWidth() > tower.get(p).getWidth())
-									{
-										//it is
-										//so we put the new box in here and hold on to the other box and move it upwards
+									{										
+										// We put the new box in as the new base, and take the old base, ready to move it further up
 										Box temporaryBox;
 										temporaryBox = tower.get(p);
 										tower.set(p, temp);
 										temp = temporaryBox;
 									}
-									//it isn't
-									//we'll potentially deal with that later
-									else
-									{
-										
-									}
 								}
 							}
-							//temp at the end could be very small so it wouldn't have been added ealier. This makes sure that it gets added
+							// Temp at the end could be very small so it wouldn't have been added ealier. This makes sure that it gets added
+							// i.e. If temp is smaller in both dimensions than the box above it
 							if(temp.getLength() < tower.get(tower.size()-1).getLength() && temp.getWidth() < tower.get(tower.size()-1).getWidth())
 							{
+								// Add it to the tower
 								tower.add(temp);
 							}
-							//if it gets to here it means that the box was more oblong than any other and it will not fit no matter where it is on the tower(in theory)
+							// If it gets to here it means that the box was more oblong than any other and it will not fit no matter where it is on the tower
 							else
 							{
 								
@@ -167,14 +138,10 @@ class NPStack
 						}
 					}
 				}				
-				//add the tower to the list of towers
+				// Create a new tower out of this ArrayList of boxes and add it to the list of towers
 				towerList.add(new Tower(tower));
+				// Re-initialize the arraylist, ready to create another tower
 				tower = new ArrayList<Box>();
-				boxCounter = 0;
-			}
-			// Print out each tower
-			for (Tower t : towerList) {
-				t.printTower();
 			}
 		}
 		catch(Exception e)
@@ -201,25 +168,9 @@ class NPStack
 			randIndex = rand.nextInt(towerList.size());
 		}
 		parentTwo = towerList.get(randIndex);
-		// // Next we get the second tallest/fittest
-		// maxHeightIndex = 0;
-		// int maxHeightIndex2 = 0;
-		// for (int i = 0; i < towerList.size(); i++) {
-		// 	if (towerList.get(i).getHeight() > towerList.get(maxHeightIndex).getHeight() ) {
-		// 		maxHeightIndex2 = maxHeightIndex;
-		// 		maxHeightIndex = i;
-		// 	} else if (towerList.get(i).getHeight() > towerList.get(maxHeightIndex2).getHeight() && towerList.get(i).getHeight() != parentOne.getHeight()) {
-		// 		maxHeightIndex2 = i;
-		// 	}
-		// }
-		// parentTwo = towerList.get(maxHeightIndex2);
 	}
 
 	static void crossover() {
-		System.out.println("////////////////////////////PARENT ONE//////////////////////////////////////////////");
-		parentOne.printTower();
-		System.out.println("////////////////////////////PARENT TWO//////////////////////////////////////////////");		
-		parentTwo.printTower();
 		int switchLevel = 1;
 		// Choose a random level that is less than the shorter of the two's heights
 		int lesserNumberOfBoxes = Math.min(parentOne.getSize(), parentTwo.getSize());
@@ -234,7 +185,6 @@ class NPStack
 		boolean switch2Valid = false;
 		// While there are still valid swaps to check
 		while(switchLevel < lesserNumberOfBoxes) {
-			System.out.println("CURRENT SWITCH LEVEL: " + switchLevel);
 			// Get the box of the current level from parent 1.
 			Box parent1Box = parent1Boxes.get(switchLevel);
 			// Get the box of the level down from parent 2
@@ -294,12 +244,6 @@ class NPStack
 					forChild2.add(parent1Boxes.get(i));
 				}
 				child2 = new Tower(forChild2);
-
-
-				System.out.println("////////////////////////////CHILD ONE//////////////////////////////////////////////");
-				child1.printTower();
-				System.out.println("////////////////////////////CHILD TWO//////////////////////////////////////////////");
-				child2.printTower();
 				addOffspring(child1, child2);
 				break;
 			} else {
@@ -307,8 +251,6 @@ class NPStack
 			}
 			// If we run out of levels to compare
 			if (switchLevel == lesserNumberOfBoxes) {
-				// Print a message to that effect
-				System.out.println("Could not find a valid set of offspring this generation");
 				break;
 			}
 		}
@@ -350,9 +292,21 @@ class NPStack
 				smallestIndex = i;
 			}
 		}
-		System.out.println("Removing tower at index " + smallestIndex);
 		towerList.remove(smallestIndex);
 	} 
+
+	// This function returns true if our population of towers has converged
+	// Our criteria for being converged is if all of the towers have the same height
+	static boolean isConverged() {		
+		int height = towerList.get(0).getHeight();
+		boolean converged = true;
+		for (Tower t : towerList) {
+			if (t.getHeight() != height) {
+				converged = false;
+			}
+		}
+		return converged;
+	}
 
 }
 
@@ -421,10 +375,10 @@ class Tower
 	}
 
 	public void printTower() {
-		System.out.println("Width Length Height ID");
+		int currentHeight = 0;
 		for (Box b : boxes) {
-			System.out.println(b.getWidth() + " " + b.getLength() + " " + b.getHeight() + " " + b.getID());
+			currentHeight += b.getHeight();
+			System.out.println(b.getWidth() + " " + b.getLength() + " " + b.getHeight() + " " + currentHeight);
 		}
-		System.out.println("Tower height: " + _height);
 	}
 }
